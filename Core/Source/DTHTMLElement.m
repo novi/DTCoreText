@@ -78,6 +78,8 @@
     
     NSMutableArray *_children;
 	NSDictionary *_attributes; // contains all attributes from parsing
+    
+    BOOL _verticalForms;
 }
 
 - (id)init
@@ -225,6 +227,10 @@
 	{
 		[tmpDict setObject:[NSNumber numberWithInteger:headerLevel] forKey:@"DTHeaderLevel"];
 	}
+    
+    if (_verticalForms) {
+        [tmpDict setObject:[NSNumber numberWithBool:YES] forKey:(id)kCTVerticalFormsAttributeName];
+    }
 	
 	return tmpDict;
 }
@@ -670,6 +676,11 @@
 			fontVariant = DTHTMLElementFontVariantNormal;
 		}
 	}
+    
+    NSString* writingMode = [styles objectForKey:@"-webkit-writing-mode"];
+    if ([writingMode isEqualToString:@"vertical-rl"]) {
+        _verticalForms = YES;
+    }
 	
 	// list style became it's own object
 	self.listStyle = [DTCSSListStyle listStyleWithStyles:styles];
